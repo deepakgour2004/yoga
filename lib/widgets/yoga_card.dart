@@ -64,11 +64,15 @@ class _YogaWidgetState extends State<YogaWidget> {
                               height: 20,
                               width: 45,
                               decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.blue),
+                                  border: Border.all(
+                                      color: Colors.blue,
+                                      style: BorderStyle.solid),
                                   borderRadius: BorderRadius.circular(10)),
-                              child: Text(
-                                "book",
-                                style: TextStyle(color: Colors.blue),
+                              child: Center(
+                                child: Text(
+                                  "book",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
                               ),
                             )
                           : Icon(Icons.lock),
