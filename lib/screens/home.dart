@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:yoga/widgets/event_widget.dart';
-import 'package:yoga/widgets/lesson_widget.dart';
+import 'package:yoga/controller/lessons_controler.dart';
+import 'package:yoga/controller/programs_controller.dart';
 import 'package:yoga/widgets/yoga_card.dart';
 
 class Home extends StatefulWidget {
@@ -246,26 +246,39 @@ class _HomeState extends State<Home> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .35,
                         width: MediaQuery.of(context).size.width * .89,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 5,
-                          shrinkWrap: true,
-                          itemBuilder: ((context, index) {
-                            return Column(
-                              children: [
-                                SizedBox(
-                                  height: 28,
-                                ),
-                                YogaWidget(
-                                    programjson["program"][index]["image"],
-                                    programjson["program"][index]["title"],
-                                    programjson["program"][index]["course"],
-                                    programjson["program"][index]["session"],
-                                    0),
-                              ],
-                            );
-                          }),
-                        ),
+                        child: FutureBuilder(
+                            future: ProgramsController().getPrograms(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else {
+                                var items = snapshot.data["items"] as List;
+                                return ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: items.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: ((context, index) {
+                                    return Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 28,
+                                        ),
+                                        YogaWidget(
+                                            programjson["program"][index]
+                                                ["image"],
+                                            items[index]["category"],
+                                            items[index]["name"],
+                                            "${items[index]["lesson"]} lessons",
+                                            0),
+                                      ],
+                                    );
+                                  }),
+                                );
+                              }
+                            }),
                       ),
                     ],
                   ),
@@ -355,25 +368,41 @@ class _HomeState extends State<Home> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .35,
                         width: MediaQuery.of(context).size.width * .89,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 5,
-                            shrinkWrap: true,
-                            itemBuilder: ((context, index) {
-                              return Column(
-                                children: [
-                                  SizedBox(
-                                    height: 28,
-                                  ),
-                                  YogaWidget(
-                                      lessonjson["lesson"][index]["image"],
-                                      lessonjson["lesson"][index]["title"],
-                                      lessonjson["lesson"][index]["course"],
-                                      lessonjson["lesson"][index]["session"],
-                                      2),
-                                ],
-                              );
-                            })),
+                        child: FutureBuilder(
+                            future: LessonsController().getLessons(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else {
+                                var items = snapshot.data["items"] as List;
+
+                                return ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: items.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: ((context, index) {
+                                      return Column(
+                                        children: [
+                                          SizedBox(
+                                            height: 28,
+                                          ),
+                                          YogaWidget(
+                                            lessonjson["lesson"][index]
+                                                ["image"],
+                                            items[index]["category"],
+                                            items[index]["name"],
+                                            "${items[index]["duration"]} hours",
+                                            2,
+                                            lock: items[index]['locked'],
+                                          ),
+                                        ],
+                                      );
+                                    }));
+                              }
+                            }),
                       ),
                     ],
                   )

@@ -6,8 +6,10 @@ class YogaWidget extends StatefulWidget {
   var course;
   var session;
   var type;
+  var lock;
 
-  YogaWidget(this.image, this.title, this.course, this.session, this.type);
+  YogaWidget(this.image, this.title, this.course, this.session, this.type,
+      {this.lock = false});
 
   @override
   State<YogaWidget> createState() => _YogaWidgetState();
@@ -44,14 +46,11 @@ class _YogaWidgetState extends State<YogaWidget> {
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  Text(
-                    widget.course,
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
-                ],
+              Text(
+                widget.course,
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                maxLines: 2,
               ),
               Row(
                 children: [
@@ -75,7 +74,9 @@ class _YogaWidgetState extends State<YogaWidget> {
                                 ),
                               ),
                             )
-                          : Icon(Icons.lock),
+                          : widget.lock
+                              ? Icon(Icons.lock)
+                              : Icon(Icons.lock_open),
                 ],
               )
             ],
